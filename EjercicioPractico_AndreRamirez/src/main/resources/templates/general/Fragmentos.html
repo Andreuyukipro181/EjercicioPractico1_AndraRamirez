@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Biblioteca</title>
+  <link rel="stylesheet" th:href="@{/css/estilos.css}"/>
+</head>
+
+<body th:fragment="header">
+<header>
+  <nav>
+    <a th:href="@{/}">Inicio</a> |
+    <a th:href="@{/categoria/listado}">Categorías</a> |
+    <a th:href="@{/libro/listado}">Libros</a> |
+    <a th:href="@{/queja/form}">Quejas</a>
+  </nav>
+  <hr/>
+</header>
+</body>
+
+<footer th:fragment="footer">
+  <hr/>
+  <div class="text-center">Biblioteca &copy; 2025</div>
+</footer>
+</html>
