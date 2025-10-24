@@ -11,24 +11,29 @@ package com.biblioteca.biblioteca.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "categoria")
 public class Categoria implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_categoria")
-    private Integer idCategoria;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @NotBlank
-    @Size(max = 50)
-    @Column(nullable = false, length = 50)
+    @NotBlank @Size(max = 100)
+    private String nombre;
+
+    @Size(max = 255)
     private String descripcion;
 
-    @Column(nullable = false)
-    private boolean activo = true;
+    @Column(name = "created_at", insertable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", insertable = false, updatable = false)
+    private LocalDateTime updatedAt;
 }

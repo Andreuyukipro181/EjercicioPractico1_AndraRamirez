@@ -3,62 +3,71 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{general/fragmentos :: head}"></head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Libros</title>
+</head>
 <body>
-<header th:replace="~{general/fragmentos :: header}"></header>
+<h1>Libros</h1>
+<p>Total: <span th:text="${totalLibros}">0</span></p>
 
-<section class="container">
-  <h2>Libros</h2>
-  <p>Total: <strong th:text="${totalLibros}">0</strong></p>
+<!-- FORMULARIO DE ALTA / EDICIÓN -->
+<form th:action="@{/libro/guardar}" th:object="${libro}" method="post">
+  <!-- Requeridos -->
+  <input type="text" th:field="*{titulo}" placeholder="Título *" required />
+  <input type="text" th:field="*{autor}" placeholder="Autor *" required />
+  <select th:field="*{categoria.id}" required>
+    <option value="">-- Categoría --</option>
+    <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"></option>
+  </select>
 
-  <form th:action="@{/libro/guardar}" th:object="${libro}" method="post" class="mb-3">
-    <input type="hidden" th:field="*{idLibro}"/>
+  <!-- Opcionales -->
+  <input type="text" th:field="*{isbn}" placeholder="ISBN" />
+  <input type="date" th:field="*{fechaPublicacion}" />
+  <input type="number" step="0.01" min="0" th:field="*{precio}" placeholder="Precio" />
+  <label>
+    <input type="checkbox" th:field="*{disponible}" /> Disponible
+  </label>
+  <br />
+  <textarea th:field="*{descripcion}" placeholder="Descripción (opcional)" cols="40" rows="2"></textarea>
 
-    <input th:field="*{titulo}" placeholder="Título" required maxlength="128"/>
-    <input th:field="*{autor}" placeholder="Autor" required maxlength="128"/>
-    <input th:field="*{anio}" type="number" placeholder="Año"/>
-    <input th:field="*{precio}" type="number" step="0.01" placeholder="Precio" required/>
-    <input th:field="*{existencias}" type="number" min="0" placeholder="Existencias" required/>
+  <button type="submit">Guardar</button>
+</form>
+<br />
 
-    <select th:field="*{categoria}" required>
-      <option value="">-- Categoría --</option>
-      <option th:each="c : ${categorias}" th:value="${c}" th:text="${c.descripcion}"></option>
-    </select>
-
-    <label>
-      Activo <input type="checkbox" th:field="*{activo}"/>
-    </label>
-    <button type="submit">Guardar</button>
-    <br/>
-    <textarea th:field="*{descripcion}" rows="3" placeholder="Descripción (opcional)"></textarea>
-  </form>
-
-  <table border="1" width="100%">
-    <thead>
-      <tr><th>ID</th><th>Título</th><th>Autor</th><th>Categoría</th><th>Precio</th><th>Ex</th><th>Activo</th><th>Acciones</th></tr>
-    </thead>
-    <tbody>
-    <tr th:each="l : ${libros}">
-      <td th:text="${l.idLibro}">1</td>
-      <td th:text="${l.titulo}">-</td>
-      <td th:text="${l.autor}">-</td>
-      <td th:text="${l.categoria.descripcion}">-</td>
-      <td th:text="${l.precio}">0.00</td>
-      <td th:text="${l.existencias}">0</td>
-      <td th:text="${l.activo} ? 'Sí' : 'No'">Sí</td>
-      <td>
-        <a th:href="@{'/libro/modificar/' + ${l.idLibro}}">Editar</a>
-        <form th:action="@{/libro/eliminar}" method="post" style="display:inline">
-          <input type="hidden" name="idLibro" th:value="${l.idLibro}"/>
-          <button type="submit" onclick="return confirm('¿Eliminar?')">Eliminar</button>
-        </form>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</section>
-
-<footer th:replace="~{general/fragmentos :: footer}"></footer>
+<!-- LISTADO -->
+<table border="1" cellspacing="0" cellpadding="4" width="100%">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Título</th>
+    <th>Autor</th>
+    <th>Categoría</th>
+    <th>Fecha pub.</th>
+    <th>Precio</th>
+    <th>Disponible</th>
+    <th>Acciones</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="l : ${libros}">
+    <td th:text="${l.id}">1</td>
+    <td th:text="${l.titulo}">Titulo</td>
+    <td th:text="${l.autor}">Autor</td>
+    <td th:text="${l.categoria != null ? l.categoria.nombre : '-'}">Cat</td>
+    <td th:text="${l.fechaPublicacion}">-</td>
+    <td th:text="${l.precio}">0.00</td>
+    <td th:text="${l.disponible ? 'Sí' : 'No'}">Sí</td>
+    <td>
+      <a th:href="@{'/libro/modificar/' + ${l.id}}">Editar</a>
+      <form th:action="@{/libro/eliminar}" method="post" style="display:inline">
+        <input type="hidden" name="idLibro" th:value="${l.id}" />
+        <button type="submit">Eliminar</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
 </body>
 </html>

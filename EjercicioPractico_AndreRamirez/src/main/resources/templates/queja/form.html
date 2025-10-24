@@ -3,23 +3,60 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{general/fragmentos :: head}"></head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Quejas / Sugerencias</title></head>
 <body>
-<header th:replace="~{general/fragmentos :: header}"></header>
+<h1>Quejas / Sugerencias</h1>
 
-<section class="container">
-  <h2>Quejas / Sugerencias</h2>
-  <form th:action="@{/queja/enviar}" th:object="${queja}" method="post">
-    <input th:field="*{nombre}" placeholder="Nombre" required maxlength="100"/>
-    <input th:field="*{email}"  placeholder="Email" required type="email" maxlength="150"/>
-    <br/>
-    <textarea th:field="*{mensaje}" rows="5" placeholder="Escribe aquí..." required></textarea>
-    <br/>
-    <button type="submit">Enviar</button>
-  </form>
-</section>
+<p th:if="${ok}" th:text="${ok}" style="color:green;"></p>
 
-<footer th:replace="~{general/fragmentos :: footer}"></footer>
+<form th:action="@{/queja/guardar}" th:object="${queja}" method="post">
+
+  <p>
+    <label>Nombre:</label><br>
+    <input type="text" th:field="*{nombre}">
+    <span style="color:red" th:errors="*{nombre}"></span>
+  </p>
+
+  <p>
+    <label>Email:</label><br>
+    <input type="email" th:field="*{email}">
+    <span style="color:red" th:errors="*{email}"></span>
+  </p>
+
+  <p>
+    <label>Teléfono:</label><br>
+    <input type="text" th:field="*{telefono}">
+    <span style="color:red" th:errors="*{telefono}"></span>
+  </p>
+
+  <p>
+    <label>Tipo:</label><br>
+    <select th:field="*{tipo}">
+      <option th:each="t : ${tipos}"
+              th:value="${t}"
+              th:text="${t}">CONSULTA</option>
+    </select>
+  </p>
+
+  <p>
+    <label>Asunto:</label><br>
+    <input type="text" th:field="*{asunto}">
+    <span style="color:red" th:errors="*{asunto}"></span>
+  </p>
+
+  <p>
+    <label>Mensaje:</label><br>
+    <textarea rows="6" cols="60" th:field="*{mensaje}"></textarea>
+    <span style="color:red" th:errors="*{mensaje}"></span>
+  </p>
+
+  <!-- ‘tratado’ queda oculto en el formulario (si lo quieres editable, cámbialo a checkbox) -->
+  <input type="hidden" th:field="*{tratado}"/>
+
+  <button type="submit">Enviar</button>
+</form>
+
+<p><a href="/queja/listado">Ver listado</a> | <a href="/index">Inicio</a></p>
 </body>
 </html>

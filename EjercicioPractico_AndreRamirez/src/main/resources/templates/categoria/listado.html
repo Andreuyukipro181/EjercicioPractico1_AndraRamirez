@@ -4,42 +4,36 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to c
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{general/fragmentos :: head}"></head>
+<head><meta charset="UTF-8"><title>Categorías</title></head>
 <body>
-<header th:replace="~{general/fragmentos :: header}"></header>
+<h2>Categorías</h2>
+<p>Total: <span th:text="${totalCategorias}">0</span></p>
 
-<section class="container">
-  <h2>Categorías</h2>
-  <p>Total: <strong th:text="${totalCategorias}">0</strong></p>
+<form th:action="@{/categoria/guardar}" th:object="${categoria}" method="post">
+  <input type="hidden" th:field="*{id}">
+  <input type="text" th:field="*{nombre}" placeholder="Nombre" required>
+  <input type="text" th:field="*{descripcion}" placeholder="Descripción">
+  <button type="submit">Guardar</button>
+</form>
 
-  <form th:action="@{/categoria/guardar}" th:object="${categoria}" method="post" class="mb-3">
-    <input type="hidden" th:field="*{idCategoria}"/>
-    <input th:field="*{descripcion}" placeholder="Descripción" required maxlength="50"/>
-    <label>
-      Activo <input type="checkbox" th:field="*{activo}"/>
-    </label>
-    <button type="submit">Guardar</button>
-  </form>
-
-  <table border="1" width="100%">
-    <thead><tr><th>ID</th><th>Descripción</th><th>Activo</th><th>Acciones</th></tr></thead>
-    <tbody>
+<table border="1" width="100%">
+  <thead>
+    <tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Acciones</th></tr>
+  </thead>
+  <tbody>
     <tr th:each="c : ${categorias}">
-      <td th:text="${c.idCategoria}">1</td>
-      <td th:text="${c.descripcion}">-</td>
-      <td th:text="${c.activo} ? 'Sí' : 'No'">Sí</td>
+      <td th:text="${c.id}">1</td>
+      <td th:text="${c.nombre}">Nombre</td>
+      <td th:text="${c.descripcion}">Desc</td>
       <td>
-        <a th:href="@{'/categoria/modificar/' + ${c.idCategoria}}">Editar</a>
+        <a th:href="@{'/categoria/modificar/' + ${c.id}}">Editar</a>
         <form th:action="@{/categoria/eliminar}" method="post" style="display:inline">
-          <input type="hidden" name="idCategoria" th:value="${c.idCategoria}"/>
-          <button type="submit" onclick="return confirm('¿Eliminar?')">Eliminar</button>
+          <input type="hidden" name="id" th:value="${c.id}">
+          <button type="submit">Eliminar</button>
         </form>
       </td>
     </tr>
-    </tbody>
-  </table>
-</section>
-
-<footer th:replace="~{general/fragmentos :: footer}"></footer>
+  </tbody>
+</table>
 </body>
 </html>

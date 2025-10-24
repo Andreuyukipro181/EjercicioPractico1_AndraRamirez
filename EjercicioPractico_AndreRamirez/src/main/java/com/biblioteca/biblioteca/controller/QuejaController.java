@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.biblioteca.biblioteca.controller;
 
-/**
- *
- * @author Uyuki
- */
 import com.biblioteca.biblioteca.domain.Queja;
 import com.biblioteca.biblioteca.service.QuejaService;
 import jakarta.validation.Valid;
@@ -15,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/queja")
@@ -28,16 +21,38 @@ public class QuejaController {
 
     @GetMapping("/form")
     public String form(Model model) {
-        model.addAttribute("queja", new Queja());
+        if (!model.containsAttribute("queja")) {
+            model.addAttribute("queja", new Queja());
+        }
+        model.addAttribute("tipos", Queja.Tipo.values());
         return "queja/form";
     }
 
-    @PostMapping("/enviar")
-    public String enviar(@Valid @ModelAttribute Queja queja, BindingResult br) {
+    @PostMapping("/guardar")
+    public String guardar(@Valid @ModelAttribute("queja") Queja queja,
+                          BindingResult br,
+                          RedirectAttributes ra) {
         if (br.hasErrors()) {
-            return "queja/form";
+            // Para que Thymeleaf recupere los errores después de redirect
+            ra.addFlashAttribute("org.springframework.validation.BindingResult.queja", br);
+            ra.addFlashAttribute("queja", queja);
+            return "redirect:/queja/form";
         }
         quejaService.save(queja);
-        return "redirect:/";
+        ra.addFlashAttribute("ok", "¡Gracias! Tu mensaje fue enviado.");
+        return "redirect:/queja/form";
+    }
+
+    @GetMapping("/listado")
+    public String listado(Model model) {
+        model.addAttribute("quejas", quejaService.getAll());
+        return "queja/listado";
+    }
+
+    @PostMapping("/eliminar")
+    public String eliminar(@RequestParam Long id, RedirectAttributes ra) {
+        quejaService.delete(id);
+        ra.addFlashAttribute("ok", "Registro eliminado.");
+        return "redirect:/queja/listado";
     }
 }

@@ -3,28 +3,48 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{general/fragmentos :: head}"></head>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Biblioteca</title>
+</head>
 <body>
-<header th:replace="~{general/fragmentos :: header}"></header>
+<h1>Bienvenido a la Biblioteca</h1>
+<div style="text-align: center; margin: 20px;">
+    <img src="/images/biblioteca.jpg" alt="Biblioteca" 
+         style="max-width: 80%; height: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3);">
+</div>
 
-<section class="container">
-  <h2>Bienvenido a la Biblioteca</h2>
-  <p>Explora nuestros libros por categoría.</p>
+<h2>Libros disponibles</h2>
+<table border="1" cellpadding="4" cellspacing="0">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Título</th>
+    <th>Autor</th>
+    <th>Categoría</th>
+    <th>Fecha pub.</th>
+    <th>Precio</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="l : ${libros}">
+    <td th:text="${l.id}">1</td>
+    <td th:text="${l.titulo}">Titulo</td>
+    <td th:text="${l.autor}">Autor</td>
+    <td th:text="${l.categoria.nombre}">Categoria</td>
+    <td th:text="${l.fechaPublicacion}">2020-01-01</td>
+    <td th:text="${l.precio}">0.00</td>
+  </tr>
+  </tbody>
+</table>
 
-  <h3>Libros activos</h3>
-  <ul>
-    <li th:each="l : ${libros}">
-      <span th:text="${l.titulo}">Titulo</span> — 
-      <em th:text="${l.autor}">Autor</em> 
-      (<span th:text="${l.categoria.descripcion}">Categoria</span>)
-    </li>
-  </ul>
+<h2>Categorías</h2>
+<ul>
+  <li th:each="c : ${categorias}" th:text="${c.nombre}">Categoria</li>
+</ul>
 
-  <h3>Video</h3>
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/ysz5S6PUM-U" title="YouTube video" allowfullscreen></iframe>
-</section>
-
-<footer th:replace="~{general/fragmentos :: footer}"></footer>
+<p><a href="/libro/listado">Ir a Libros</a> | <a href="/categoria/listado">Ir a Categorías</a> | <a href="/queja/form">Quejas</a></p>
 </body>
 </html>

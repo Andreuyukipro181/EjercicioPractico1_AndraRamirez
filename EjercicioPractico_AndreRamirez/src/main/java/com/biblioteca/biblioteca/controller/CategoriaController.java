@@ -20,42 +20,43 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/categoria")
 public class CategoriaController {
 
-    private final CategoriaService categoriaService;
+    private final CategoriaService service;
 
-    public CategoriaController(CategoriaService categoriaService) {
-        this.categoriaService = categoriaService;
+    public CategoriaController(CategoriaService service) {
+        this.service = service;
     }
 
     @GetMapping("/listado")
     public String listado(Model model) {
-        var categorias = categoriaService.getCategorias(false);
+        var categorias = service.getAll();
         model.addAttribute("categorias", categorias);
         model.addAttribute("totalCategorias", categorias.size());
         model.addAttribute("categoria", new Categoria());
-        return "categoria/listado";
+        return "/categoria/listado";
     }
 
     @PostMapping("/guardar")
-    public String guardar(@Valid @ModelAttribute Categoria categoria, BindingResult br) {
+    public String guardar(@Valid Categoria categoria, BindingResult br, Model model) {
         if (br.hasErrors()) {
-            return "categoria/listado";
+            model.addAttribute("categorias", service.getAll());
+            return "/categoria/listado";
         }
-        categoriaService.save(categoria);
+        service.save(categoria);
         return "redirect:/categoria/listado";
     }
 
     @GetMapping("/modificar/{id}")
-    public String modificar(@PathVariable("id") Integer id, Model model) {
-        var c = categoriaService.getCategoria(id).orElse(null);
-        if (c == null) return "redirect:/categoria/listado";
-        model.addAttribute("categoria", c);
-        model.addAttribute("categorias", categoriaService.getCategorias(false));
-        return "categoria/listado";
+    public String modificar(@PathVariable Long id, Model model) {
+        var cat = service.get(id).orElse(null);
+        if (cat == null) return "redirect:/categoria/listado";
+        model.addAttribute("categoria", cat);
+        model.addAttribute("categorias", service.getAll());
+        return "/categoria/listado";
     }
 
     @PostMapping("/eliminar")
-    public String eliminar(@RequestParam Integer idCategoria) {
-        categoriaService.delete(idCategoria);
+    public String eliminar(@RequestParam Long id) {
+        service.delete(id);
         return "redirect:/categoria/listado";
     }
 }

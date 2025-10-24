@@ -10,40 +10,29 @@ package com.biblioteca.biblioteca.service;
  */
 import com.biblioteca.biblioteca.domain.Categoria;
 import com.biblioteca.biblioteca.repository.CategoriaRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CategoriaService {
-
     private final CategoriaRepository repo;
 
     public CategoriaService(CategoriaRepository repo) {
         this.repo = repo;
     }
 
-    @Transactional(readOnly = true)
-    public List<Categoria> getCategorias(boolean soloActivas) {
-        return soloActivas ? repo.findByActivoTrue() : repo.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Categoria> getCategoria(Integer idCategoria) {
-        return repo.findById(idCategoria);
-    }
+    @Transactional
+    public void save(Categoria c) { repo.save(c); }
 
     @Transactional
-    public void save(Categoria c) {
-        repo.save(c);
-    }
+    public void delete(Long id) { repo.deleteById(id); }
 
     @Transactional
-    public void delete(Integer idCategoria) {
-        if (!repo.existsById(idCategoria)) {
-            throw new IllegalArgumentException("La categoría no existe.");
-        }
-        repo.deleteById(idCategoria);
-    }
+    public Optional<Categoria> get(Long id) { return repo.findById(id); }
+
+    @Transactional
+    public List<Categoria> getAll() { return repo.findAll(); }
 }
